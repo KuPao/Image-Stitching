@@ -9,7 +9,7 @@
 
 int main() {
 	cv::Mat image;
-	image = cv::imread("E:\\assignment\\VFX\\Image-Stitching\\Image-Stitching\\DSC_0670.JPG", CV_LOAD_IMAGE_COLOR);
+	image = cv::imread("E:\\assignment\\VFX\\Image-Stitching\\Image-Stitching\\1.JPG", CV_LOAD_IMAGE_COLOR);
 	
 	std::vector<FeaturePoint> features;
 	auto feature_image = DetectFeature(image, features);

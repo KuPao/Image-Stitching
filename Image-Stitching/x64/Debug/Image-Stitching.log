@@ -71,4 +71,8 @@ E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(217,80): w
           [
               _Tp=uchar
           ]
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(480,12): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'unsigned __int64'
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(480,12): message : consider using '%zd' in the format string
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(497,12): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'unsigned __int64'
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(497,12): message : consider using '%zd' in the format string
   Image-Stitching.vcxproj -> E:\assignment\VFX\Image-Stitching\x64\Debug\Image-Stitching.exe

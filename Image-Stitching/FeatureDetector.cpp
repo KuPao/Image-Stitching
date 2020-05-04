@@ -401,46 +401,18 @@ void computeFeatureDescriptor(std::vector<FeaturePoint>& features, const std::ve
     }
 }
 
-//void drawFeatures(const std::vector<FeaturePoint>& features, int state, bool drawWindow, int level, int imgIdx, char* fileName) {
-//    // (including oriented sample bwindow)
-//    IplImage* Image1 = cvLoadImage(fileName);
-//    for (int k = 0; k < features.size(); k++) {
-//        int x = features[k].x, y = features[k].y;
-//        int windowSize = 40 * (level - features[k].level);
-//        int windowSizeHalf = windowSize >> 1;
-//        double orientation = features[k].orientation;
-//        double rotation[2][2] = { {cos(orientation), -sin(orientation)},
-//                                 {sin(orientation),  cos(orientation)} };
-//        double corner[4][2] = { { rotation[0][0] * (-windowSizeHalf) + rotation[0][1] * (-windowSizeHalf),
-//                                 rotation[1][0] * (-windowSizeHalf) + rotation[1][1] * (-windowSizeHalf) }, // top left
-//                               { rotation[0][0] * (windowSizeHalf - 1) + rotation[0][1] * (-windowSizeHalf),
-//                                 rotation[1][0] * (windowSizeHalf - 1) + rotation[1][1] * (-windowSizeHalf) }, // top right
-//                               { rotation[0][0] * (-windowSizeHalf) + rotation[0][1] * (windowSizeHalf - 1),
-//                                 rotation[1][0] * (-windowSizeHalf) + rotation[1][1] * (windowSizeHalf - 1) }, // bottom left
-//                               { rotation[0][0] * (windowSizeHalf - 1) + rotation[0][1] * (windowSizeHalf - 1),
-//                                 rotation[1][0] * (windowSizeHalf - 1) + rotation[1][1] * (windowSizeHalf - 1) } }; // bottom right
-//        // mark feature points and draw oriented sample windows
-//        cvCircle(Image1, cvPoint(x, y), 4, CV_RGB(255 / (level - features[k].level), 0, 0), 1, CV_AA, 0);
-//        if (drawWindow) {
-//            cvLine(Image1, cvPoint(x, y), cvPoint(((int)(corner[1][0] + x + corner[3][0] + x)) >> 1, ((int)(corner[1][1] + y + corner[3][1] + y)) >> 1), CV_RGB(255 / (level - features[k].level), 0, 0), 1, CV_AA, 0);
-//            cvLine(Image1, cvPoint((int)corner[0][0] + x, (int)corner[0][1] + y), cvPoint((int)corner[1][0] + x, (int)corner[1][1] + y), CV_RGB(255 / (level - features[k].level), 0, 0), 1, CV_AA, 0);
-//            cvLine(Image1, cvPoint((int)corner[1][0] + x, (int)corner[1][1] + y), cvPoint((int)corner[3][0] + x, (int)corner[3][1] + y), CV_RGB(255 / (level - features[k].level), 0, 0), 1, CV_AA, 0);
-//            cvLine(Image1, cvPoint((int)corner[3][0] + x, (int)corner[3][1] + y), cvPoint((int)corner[2][0] + x, (int)corner[2][1] + y), CV_RGB(255 / (level - features[k].level), 0, 0), 1, CV_AA, 0);
-//            cvLine(Image1, cvPoint((int)corner[2][0] + x, (int)corner[2][1] + y), cvPoint((int)corner[0][0] + x, (int)corner[0][1] + y), CV_RGB(255 / (level - features[k].level), 0, 0), 1, CV_AA, 0);
-//        }
-//    }
-//    char name[50];
-//    if (state == 0) // just projected
-//        sprintf(name, "data/feature/features_i%d_%d_1.jpg", imgIdx + 1, drawWindow);
-//    else if (state == 1) // delete features close to boudary
-//        sprintf(name, "data/feature/features_i%d_%d_2.jpg", imgIdx + 1, drawWindow);
-//    else  // non-maximal suppression
-//        sprintf(name, "data/feature/features_i%d_%d_3.jpg", imgIdx + 1, drawWindow);
-//    cvSaveImage(name, Image1);
-//    cvReleaseImage(&Image1);
-//}
+void drawFeatures(const std::vector<FeaturePoint>& features, cv::Mat& src) {
+    cv::Mat copy;
+    src.copyTo(copy);
+    for (auto feature : features) {
+        cv::circle(copy, cv::Point(feature.x, feature.y), 3, cv::Scalar(0, 0, 255));
+    }
+    //cv::imwrite("features.jpg", copy);
+    cv::imshow("features.jpg", copy);
+    cv::waitKey(1);
+}
 
-cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint>)
+cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features)
 {
     int level = 5;
     int scale = 2;
@@ -483,15 +455,16 @@ cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint>)
 
     // Step 3: feature filter 
     // 3-1: project features back to original resolution image
-    std::vector<FeaturePoint> features;
+    /*std::vector<FeaturePoint> features;*/
     FeaturePoint** featureMap = new FeaturePoint * [src.rows];
     for (int i = 0; i < src.rows; i++)
         featureMap[i] = new FeaturePoint[src.cols];
     getAllFeatures(features, featureMap, response, orientation, isFeature, level, scale);
     response.resize(0);
     orientation.resize(0);
+    drawFeatures(features, src);
     /*drawFeatures(features, 0, false, level, n, inputName);*/
-    printf("\tTotal of %d features\n", features.size());
+    //printf("\tTotal of %d features\n", features.size());
     int* counter = new int[level];
     for (int lvl = 0; lvl < level; lvl++)
         counter[lvl] = 0;
