@@ -64,7 +64,7 @@ void computeGradient(cv::Mat src, cv::Mat& dst, int xOrder, int yOrder)
     }
 }
 
-void conerResponse(std::vector<cv::Mat> pyramid, std::vector<cv::Mat>& response, int _level, float _sigma_d, float _sigma_i)
+void HarrisResponse(std::vector<cv::Mat> pyramid, std::vector<cv::Mat>& response, int _level, float _sigma_d, float _sigma_i)
 {
     cv::Mat Ix, Iy, Ix2, Iy2, IxIy, img;
     for (int lv = 0; lv < _level; lv++) {
@@ -121,7 +121,7 @@ void conerResponse(std::vector<cv::Mat> pyramid, std::vector<cv::Mat>& response,
     }
 }
 
-void computeOrientation(const std::vector<cv::Mat>& pyramid, std::vector<cv::Mat>& orientation, int _level, float _sigma_o)
+void featureOrientation(const std::vector<cv::Mat>& pyramid, std::vector<cv::Mat>& orientation, int _level, float _sigma_o)
 {
     cv::Mat Ix, Iy, img;
     for (int lv = 0; lv < _level; lv++) {
@@ -358,7 +358,7 @@ void nonMaximalSuppression(std::vector<FeaturePoint>& features, int desiredNum, 
     }
 }
 
-void computeFeatureDescriptor(std::vector<FeaturePoint>& features, const std::vector<cv::Mat>& pyramid, int _level, int _scale)
+void featureDescriptor(std::vector<FeaturePoint>& features, const std::vector<cv::Mat>& pyramid, int _level, int _scale)
 {
     // initialize
     int* s = new int[_level];
@@ -436,14 +436,14 @@ cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level
     for (int i = 0; i < level; i++) {
         pyramid[i].copyTo(response[i]);
     }
-    conerResponse(pyramid, response, level, sigma_d, sigma_i);
+    HarrisResponse(pyramid, response, level, sigma_d, sigma_i);
 
     // feature orientation
     std::vector<cv::Mat> orientation(level);
     for (int i = 0; i < level; i++) {
         pyramid[i].copyTo(orientation[i]);
     }
-    computeOrientation(pyramid, orientation, level, sigma_o);
+    featureOrientation(pyramid, orientation, level, sigma_o);
 
     // find local maxima and thresholding
     bool** isFeature = new bool* [level];
@@ -496,7 +496,7 @@ cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level
 
     // feature descriptor
     std::cout << "\nCompute feature descriptors ..." << std::endl;
-    computeFeatureDescriptor(features, pyramid, level, scale);
+    featureDescriptor(features, pyramid, level, scale);
 
     for (int i = 0; i < src.rows; i++)
         delete[] featureMap[i];
