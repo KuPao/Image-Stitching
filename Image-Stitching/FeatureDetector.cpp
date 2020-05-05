@@ -235,7 +235,7 @@ void subPixelAccuracy(const std::vector<cv::Mat>& res, bool** isFeature, int lev
     }
 }
 
-void getAllFeatures(std::vector<FeaturePoint>& features, FeaturePoint** featureMap, const std::vector<cv::Mat>& response, const std::vector<cv::Mat>& orientation, bool** isFeature, int _level, int _scale)
+void projectFeatures(std::vector<FeaturePoint>& features, FeaturePoint** featureMap, const std::vector<cv::Mat>& response, const std::vector<cv::Mat>& orientation, bool** isFeature, int _level, int _scale)
 {
     // initialize
     for (int i = 0; i < response[_level - 1].rows; i++) {
@@ -303,7 +303,7 @@ void deleteCloseToBounds(std::vector<FeaturePoint>& features, const std::vector<
                               { rotation[0][0] * (19) + rotation[0][1] * (19),
                                 rotation[1][0] * (19) + rotation[1][1] * (19) } }; // bottom right
         
-        // if part of the a feature's window falls out of image, delete it
+        // if part of the a descriptor window falls out of image, delete it
         int x = (int)((float)fp.x / s[fp.level]);
         int y = (int)((float)fp.y / s[fp.level]);
         for (int i = 0; i < 4; i++) {
@@ -318,6 +318,11 @@ void deleteCloseToBounds(std::vector<FeaturePoint>& features, const std::vector<
         }
     }
     delete[] s;
+}
+
+inline int featureDistance(FeaturePoint A, FeaturePoint B)
+{
+    return ((A.x - B.x) * (A.x - B.x) + (A.y - B.y) * (A.y - B.y));
 }
 
 void nonMaximalSuppression(std::vector<FeaturePoint>& features, int desiredNum, int initRadius, int step)
@@ -335,8 +340,10 @@ void nonMaximalSuppression(std::vector<FeaturePoint>& features, int desiredNum, 
                 continue;
             for (int j = 0; j < features.size(); j++) {
                 if ((i == j)
-                    || ((features[i].x - features[j].x) * (features[i].x - features[j].x) + (features[i].y - features[j].y) * (features[i].y - features[j].y)) >= radiusSquared)
+                    || featureDistance(features[i], features[j]) >= radiusSquared)
                     continue;
+                
+                // find strongest feature
                 if (features[j].response < features[i].response)
                     valid[j] = false;
                 else {
@@ -454,11 +461,11 @@ cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level
     // sub-pixel accuracy
     subPixelAccuracy(response, isFeature, level);
 
-    // project features back to original resolution
+    // project features to original resolution
     FeaturePoint** featureMap = new FeaturePoint * [src.rows];
     for (int i = 0; i < src.rows; i++)
         featureMap[i] = new FeaturePoint[src.cols];
-    getAllFeatures(features, featureMap, response, orientation, isFeature, level, scale);
+    projectFeatures(features, featureMap, response, orientation, isFeature, level, scale);
     response.resize(0);
     orientation.resize(0);
     drawFeatures(features, src);

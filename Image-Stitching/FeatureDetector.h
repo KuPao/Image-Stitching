@@ -11,7 +11,7 @@ void HarrisResponse(std::vector<cv::Mat> pyramid, std::vector<cv::Mat>& response
 void featureOrientation(const std::vector<cv::Mat>& pyramid, std::vector<cv::Mat>& orientation, int _level, float _sigma_o);
 void findFeatures(const std::vector<cv::Mat>& response, bool** isFeature, int level, float threshold);
 void subPixelAccuracy(const std::vector<cv::Mat>& res, bool** isFeature, int level);
-void getAllFeatures(std::vector<FeaturePoint>& features, FeaturePoint** featureMap, const std::vector<cv::Mat>& response, const std::vector<cv::Mat>& orientation, bool** isFeature, int _level, int _scale);
+void projectFeatures(std::vector<FeaturePoint>& features, FeaturePoint** featureMap, const std::vector<cv::Mat>& response, const std::vector<cv::Mat>& orientation, bool** isFeature, int _level, int _scale);
 void deleteCloseToBounds(std::vector<FeaturePoint>& features, const std::vector<cv::Mat>& pyramid, int _level, int _scale);
 void nonMaximalSuppression(std::vector<FeaturePoint>& features, int desiredNum, int initRadius, int step);
 void featureDescriptor(std::vector<FeaturePoint>& features, const std::vector<cv::Mat>& pyramid, int _level, int _scale);
