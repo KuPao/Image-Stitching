@@ -5,7 +5,7 @@
 
 #define TOLLERATE_RATIO 0.1
 
-cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level = 5, int scale = 2, float feature_threshold = 60.0, int max_feature = 750, int non_max_r = 8, int non_max_step = 1);
+cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level = 5, int scale = 2, float feature_threshold = 60.0, int max_feature = 750, int non_max_r = 8, int non_max_step = 1, int suppression_mode = 1);
 void getPyramid(std::vector<cv::Mat>& pyramid, int _scale, int _level, float _sigma);
 void computeGradient(cv::Mat src, cv::Mat& dst, int xOrder, int yOrder);
 void HarrisResponse(std::vector<cv::Mat> pyramid, std::vector<cv::Mat>& response, int _level, float _sigma_d, float _sigma_i);

@@ -10,7 +10,7 @@ void drawFeatures(const std::vector<FeaturePoint>& features, cv::Mat& src) {
     cv::waitKey(1);
 }
 
-cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level, int scale, float feature_threshold, int max_feature, int non_max_r, int non_max_step)
+cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level, int scale, float feature_threshold, int max_feature, int non_max_r, int non_max_step, int suppression_mode)
 {
     float sigma = 1.0;
     float sigma_d = 1.0;
@@ -76,12 +76,16 @@ cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level
     for (int lv = 0; lv < level; lv++)
         std::cout << "level " << lv << ": " << counter[lv] << std::endl;
 
-    // non-maximal suppression
-    /*std::cout << "\nApply non-maximal suppression ...\n" << std::endl;
-    nonMaximalSuppression(features, max_feature, non_max_r, non_max_step);*/
-    // strongest
-    std::cout << "\nApply strongest n ...\n" << std::endl;
-    strongest(features, max_feature);
+    if (suppression_mode == 0) {
+        // non-maximal suppression
+        std::cout << "\nApply non-maximal suppression ...\n" << std::endl;
+        nonMaximalSuppression(features, max_feature, non_max_r, non_max_step);
+    }
+    else {
+        // strongest
+        std::cout << "\nApply strongest n ...\n" << std::endl;
+        strongest(features, max_feature);
+    }
     drawFeatures(features, src);
     std::cout << "\tNumber of Features: " << features.size() << std::endl;
     for (int lv = 0; lv < level; lv++)
