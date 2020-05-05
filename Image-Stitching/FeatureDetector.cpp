@@ -454,7 +454,6 @@ cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level
     // sub-pixel accuracy
     subPixelAccuracy(response, isFeature, level);
 
-    // Step 3: feature filter 
     // project features back to original resolution
     FeaturePoint** featureMap = new FeaturePoint * [src.rows];
     for (int i = 0; i < src.rows; i++)
@@ -475,7 +474,7 @@ cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level
     // delete features too close to the boundaries
     deleteCloseToBounds(features, pyramid, level, scale);
     drawFeatures(features, src);
-    printf("\tTotal of %d features\n", features.size());
+    std::cout << "\tNumber of Features: " << features.size() << std::endl
     for (int lv = 0; lv < level; lv++)
         counter[lv] = 0;
     for (int k = 0; k < features.size(); k++)
@@ -484,18 +483,18 @@ cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level
         std::cout << "level " << lv << ": " << counter[lv] << std::endl;
 
     // non-maximal suppression
-    printf("\nApply non-maximal suppression ...\n");
+    std::cout << "\nApply non-maximal suppression ...\n" << std::endl;
     nonMaximalSuppression(features, max_feature, non_max_r, non_max_step);
 
+    std::cout << "\tNumber of Features: " << features.size() << std::endl
     for (int lv = 0; lv < level; lv++)
         counter[lv] = 0;
     for (int k = 0; k < features.size(); k++)
         counter[features[k].level]++;
-    printf("\tTotal of %d features\n", features.size());
     for (int lv = 0; lv < level; lv++)
         std::cout << "level " << lv << ": " << counter[lv] << std::endl;
 
-    // Feature descriptor
+    // feature descriptor
     std::cout << "\nCompute feature descriptors ..." << std::endl;
     computeFeatureDescriptor(features, pyramid, level, scale);
 
