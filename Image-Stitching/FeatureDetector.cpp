@@ -1,6 +1,16 @@
 #include "FeatureDetector.h"
 
-cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level = 5, int scale = 2, float feature_threshold = 30.0, int max_feature = 500, int non_max_r = 1, int non_max_step = 1)
+void drawFeatures(const std::vector<FeaturePoint>& features, cv::Mat& src) {
+    cv::Mat copy;
+    src.copyTo(copy);
+    for (auto feature : features) {
+        cv::circle(copy, cv::Point(feature.x, feature.y), 3, cv::Scalar(0, 0, 255));
+    }
+    cv::imshow("features.jpg", copy);
+    cv::waitKey(1);
+}
+
+cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level, int scale, float feature_threshold, int max_feature, int non_max_r, int non_max_step)
 {
     float sigma = 1.0;
     float sigma_d = 1.0;
@@ -58,7 +68,7 @@ cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level
     // delete features too close to the boundaries
     deleteCloseToBounds(features, pyramid, level, scale);
     drawFeatures(features, src);
-    std::cout << "\tNumber of Features: " << features.size() << std::endl
+    std::cout << "\tNumber of Features: " << features.size() << std::endl;
     for (int lv = 0; lv < level; lv++)
         counter[lv] = 0;
     for (int k = 0; k < features.size(); k++)
@@ -67,10 +77,13 @@ cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level
         std::cout << "level " << lv << ": " << counter[lv] << std::endl;
 
     // non-maximal suppression
-    std::cout << "\nApply non-maximal suppression ...\n" << std::endl;
-    nonMaximalSuppression(features, max_feature, non_max_r, non_max_step);
-
-    std::cout << "\tNumber of Features: " << features.size() << std::endl
+    /*std::cout << "\nApply non-maximal suppression ...\n" << std::endl;
+    nonMaximalSuppression(features, max_feature, non_max_r, non_max_step);*/
+    // strongest
+    std::cout << "\nApply strongest n ...\n" << std::endl;
+    strongest(features, max_feature);
+    drawFeatures(features, src);
+    std::cout << "\tNumber of Features: " << features.size() << std::endl;
     for (int lv = 0; lv < level; lv++)
         counter[lv] = 0;
     for (int k = 0; k < features.size(); k++)
@@ -428,8 +441,7 @@ void nonMaximalSuppression(std::vector<FeaturePoint>& features, int desiredNum, 
             if (!valid[i])
                 continue;
             for (int j = 0; j < features.size(); j++) {
-                if ((i == j)
-                    || featureDistance(features[i], features[j]) >= radiusSquared)
+                if ((i == j) || featureDistance(features[i], features[j]) >= radiusSquared)
                     continue;
                 
                 // find strongest feature
@@ -452,6 +464,17 @@ void nonMaximalSuppression(std::vector<FeaturePoint>& features, int desiredNum, 
             i--;
         }
     }
+}
+
+bool compareByResponse(FeaturePoint a, FeaturePoint b)
+{
+    return a.response > b.response;
+}
+
+void strongest(std::vector<FeaturePoint>& features, int desiredNum)
+{
+    std::sort(features.begin(), features.end(), compareByResponse);
+    features.resize(desiredNum);
 }
 
 void featureDescriptor(std::vector<FeaturePoint>& features, const std::vector<cv::Mat>& pyramid, int _level, int _scale)
@@ -491,25 +514,16 @@ void featureDescriptor(std::vector<FeaturePoint>& features, const std::vector<cv
         // normalize
         float mean = 0.0;
         for (int i = 0; i < 64; i++)
-            mean += features[k].descriptor[i];
+            mean += features[n].descriptor[i];
         mean /= 64;
         float std = 0.0;
         for (int i = 0; i < 64; i++)
-            std += ((features[k].descriptor[i] - mean) * (features[k].descriptor[i] - mean));
+            std += ((features[n].descriptor[i] - mean) * (features[n].descriptor[i] - mean));
         std = sqrt(std / 64);
         for (int i = 0; i < 64; i++)
-            features[k].descriptor[i] = (features[k].descriptor[i] - mean) / std;
+            features[n].descriptor[i] = (features[n].descriptor[i] - mean) / std;
     }
 }
 
-void drawFeatures(const std::vector<FeaturePoint>& features, cv::Mat& src) {
-    cv::Mat copy;
-    src.copyTo(copy);
-    for (auto feature : features) {
-        cv::circle(copy, cv::Point(feature.x, feature.y), 3, cv::Scalar(0, 0, 255));
-    }
-    cv::imshow("features.jpg", copy);
-    cv::waitKey(1);
-}
 
 

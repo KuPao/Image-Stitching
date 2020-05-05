@@ -1,78 +1,77 @@
 ﻿  FeatureDetector.cpp
 D:\Toolkit\OpenCV\opencv\build\include\opencv2\calib3d.hpp(1,1): warning C4819: The file contains a character that cannot be represented in the current code page (950). Save the file in Unicode format to prevent data loss
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(25,53): warning C4244: '=': conversion from 'float' to '_Tp', possible loss of data
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(128,53): warning C4244: '=': conversion from 'float' to '_Tp', possible loss of data
           with
           [
               _Tp=uchar
           ]
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(32,53): warning C4244: '=': conversion from 'float' to '_Tp', possible loss of data
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(136,53): warning C4244: '=': conversion from 'float' to '_Tp', possible loss of data
           with
           [
               _Tp=uchar
           ]
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(44,53): warning C4244: '=': conversion from 'float' to '_Tp', possible loss of data
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(149,53): warning C4244: '=': conversion from 'float' to '_Tp', possible loss of data
           with
           [
               _Tp=uchar
           ]
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(51,70): warning C4244: '=': conversion from 'float' to '_Tp', possible loss of data
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(156,70): warning C4244: '=': conversion from 'float' to '_Tp', possible loss of data
           with
           [
               _Tp=uchar
           ]
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(58,70): warning C4244: '=': conversion from 'float' to '_Tp', possible loss of data
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(163,70): warning C4244: '=': conversion from 'float' to '_Tp', possible loss of data
           with
           [
               _Tp=uchar
           ]
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(106,58): warning C4305: '=': truncation from 'int' to '_Tp'
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(213,57): warning C4305: '=': truncation from 'int' to '_Tp'
           with
           [
               _Tp=uchar
           ]
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(106,53): warning C4309: '=': truncation of constant value
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(109,53): warning C4244: '=': conversion from 'double' to '_Tp', possible loss of data
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(213,52): warning C4309: '=': truncation of constant value
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(216,52): warning C4244: '=': conversion from 'double' to '_Tp', possible loss of data
           with
           [
               _Tp=uchar
           ]
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(136,56): warning C4244: '=': conversion from 'double' to '_Tp', possible loss of data
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(243,55): warning C4244: '=': conversion from 'double' to '_Tp', possible loss of data
           with
           [
               _Tp=char
           ]
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(212,48): warning C4838: conversion from '_Tp' to 'float' requires a narrowing conversion
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(315,46): warning C4838: conversion from '_Tp' to 'float' requires a narrowing conversion
           with
           [
               _Tp=uchar
           ]
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(212,85): warning C4838: conversion from '_Tp' to 'float' requires a narrowing conversion
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(315,81): warning C4838: conversion from '_Tp' to 'float' requires a narrowing conversion
           with
           [
               _Tp=uchar
           ]
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(213,49): warning C4838: conversion from '_Tp' to 'float' requires a narrowing conversion
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(316,47): warning C4838: conversion from '_Tp' to 'float' requires a narrowing conversion
           with
           [
               _Tp=uchar
           ]
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(213,86): warning C4838: conversion from '_Tp' to 'float' requires a narrowing conversion
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(316,82): warning C4838: conversion from '_Tp' to 'float' requires a narrowing conversion
           with
           [
               _Tp=uchar
           ]
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(217,43): warning C4838: conversion from '_Tp' to 'float' requires a narrowing conversion
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(320,40): warning C4838: conversion from '_Tp' to 'float' requires a narrowing conversion
           with
           [
               _Tp=uchar
           ]
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(217,80): warning C4838: conversion from '_Tp' to 'float' requires a narrowing conversion
+E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(320,74): warning C4838: conversion from '_Tp' to 'float' requires a narrowing conversion
           with
           [
               _Tp=uchar
           ]
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(480,12): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'unsigned __int64'
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(480,12): message : consider using '%zd' in the format string
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(497,12): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'unsigned __int64'
-E:\assignment\VFX\Image-Stitching\Image-Stitching\FeatureDetector.cpp(497,12): message : consider using '%zd' in the format string
+  main.cpp
+D:\Toolkit\OpenCV\opencv\build\include\opencv2\calib3d.hpp(1,1): warning C4819: The file contains a character that cannot be represented in the current code page (950). Save the file in Unicode format to prevent data loss
+  Generating Code...
   Image-Stitching.vcxproj -> E:\assignment\VFX\Image-Stitching\x64\Debug\Image-Stitching.exe
