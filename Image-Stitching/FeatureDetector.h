@@ -15,4 +15,4 @@ void getAllFeatures(std::vector<FeaturePoint>& features, FeaturePoint** featureM
 void deleteCloseToBounds(std::vector<FeaturePoint>& features, const std::vector<cv::Mat>& pyramid, int _level, int _scale);
 void nonMaximalSuppression(std::vector<FeaturePoint>& features, int desiredNum, int initRadius, int step);
 void computeFeatureDescriptor(std::vector<FeaturePoint>& features, const std::vector<cv::Mat>& pyramid, int _level, int _scale);
-cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint>, int level = 5, int scale = 2, float feature_threshold = 30.0, int max_feature = 500);
+cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level = 5, int scale = 2, float feature_threshold = 30.0, int max_feature = 500, int non_max_r = 1, int non_max_step = 1);

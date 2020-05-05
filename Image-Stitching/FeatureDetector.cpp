@@ -366,8 +366,8 @@ void computeFeatureDescriptor(std::vector<FeaturePoint>& features, const std::ve
     for (int lv = _level - 2; lv >= 0; lv--)
         s[lv] = s[lv + 1] * _scale;
     
-    for (int k = 0; k < features.size(); k++) {
-        FeaturePoint fp = features[k];
+    for (int n = 0; n < features.size(); n++) {
+        FeaturePoint fp = features[n];
         // rotate a 40 x 40 descriptor sample window
         float rotation[2][2] = { {cos(fp.orientation), -sin(fp.orientation)},
                                 {sin(fp.orientation),  cos(fp.orientation)} };
@@ -384,25 +384,25 @@ void computeFeatureDescriptor(std::vector<FeaturePoint>& features, const std::ve
         // each element of 64D desrciptor is the mean of every 5 x 5 samples in the 40 x 40 window
         for (int i = 0; i < 40; i += 5) {  // row
             for (int j = 0; j < 40; j += 5) {  // col
-                features[k].descriptor[(i / 5) * 8 + (j / 5)] = 0.0;
+                features[n].descriptor[(i / 5) * 8 + (j / 5)] = 0.0;
                 for (int u = 0; u < 5; u++)  // row
                     for (int v = 0; v < 5; v++)  // col
-                        features[k].descriptor[(i / 5) * 8 + (j / 5)] += window[i + u][j + v];
-                features[k].descriptor[(i / 5) * 8 + (j / 5)] /= 25;
+                        features[n].descriptor[(i / 5) * 8 + (j / 5)] += window[i + u][j + v];
+                features[n].descriptor[(i / 5) * 8 + (j / 5)] /= 25;
             }
         }
-        
-        // normalize the desrciptor to N(0, 1)
+
+        // normalize
         float mean = 0.0;
         for (int i = 0; i < 64; i++)
             mean += features[k].descriptor[i];
         mean /= 64;
-        float stddev = 0.0;
+        float std = 0.0;
         for (int i = 0; i < 64; i++)
-            stddev += ((features[k].descriptor[i] - mean) * (features[k].descriptor[i] - mean));
-        stddev = sqrt(stddev / 64);
+            std += ((features[k].descriptor[i] - mean) * (features[k].descriptor[i] - mean));
+        std = sqrt(std / 64);
         for (int i = 0; i < 64; i++)
-            features[k].descriptor[i] = (features[k].descriptor[i] - mean) / stddev;
+            features[k].descriptor[i] = (features[k].descriptor[i] - mean) / std;
     }
 }
 
