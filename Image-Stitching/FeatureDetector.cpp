@@ -1,5 +1,94 @@
 #include "FeatureDetector.h"
 
+cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level = 5, int scale = 2, float feature_threshold = 30.0, int max_feature = 500, int non_max_r = 1, int non_max_step = 1)
+{
+    float sigma = 1.0;
+    float sigma_d = 1.0;
+    float sigma_i = 1.5;
+    float sigma_o = 4.5;
+
+	cv::Mat gray;
+	cv::cvtColor(src, gray, cv::COLOR_BGR2GRAY);
+	std::vector<cv::Mat> pyramid(level);
+    for (int i = 0; i < level; i++) {
+        gray.copyTo(pyramid[i]);
+    }
+	getPyramid(pyramid, scale, level, sigma);
+
+    // Harris corner response
+    std::vector<cv::Mat> response(level);
+    for (int i = 0; i < level; i++) {
+        pyramid[i].copyTo(response[i]);
+    }
+    HarrisResponse(pyramid, response, level, sigma_d, sigma_i);
+
+    // feature orientation
+    std::vector<cv::Mat> orientation(level);
+    for (int i = 0; i < level; i++) {
+        pyramid[i].copyTo(orientation[i]);
+    }
+    featureOrientation(pyramid, orientation, level, sigma_o);
+
+    // find local maxima and thresholding
+    bool** isFeature = new bool* [level];
+    for (int lv = 0; lv < level; lv++)
+        isFeature[lv] = new bool[response[lv].cols * response[lv].rows];
+    findFeatures(response, isFeature, level, feature_threshold);
+
+    // sub-pixel accuracy
+    subPixelAccuracy(response, isFeature, level);
+
+    // project features to original resolution
+    FeaturePoint** featureMap = new FeaturePoint * [src.rows];
+    for (int i = 0; i < src.rows; i++)
+        featureMap[i] = new FeaturePoint[src.cols];
+    projectFeatures(features, featureMap, response, orientation, isFeature, level, scale);
+    response.resize(0);
+    orientation.resize(0);
+    drawFeatures(features, src);
+
+    int* counter = new int[level];
+    for (int lv = 0; lv < level; lv++)
+        counter[lv] = 0;
+    for (int k = 0; k < features.size(); k++)
+        counter[features[k].level]++;
+    for (int lv = 0; lv < level; lv++)
+        std::cout << "level " << lv << ": " << counter[lv] << std::endl;
+
+    // delete features too close to the boundaries
+    deleteCloseToBounds(features, pyramid, level, scale);
+    drawFeatures(features, src);
+    std::cout << "\tNumber of Features: " << features.size() << std::endl
+    for (int lv = 0; lv < level; lv++)
+        counter[lv] = 0;
+    for (int k = 0; k < features.size(); k++)
+        counter[features[k].level]++;
+    for (int lv = 0; lv < level; lv++)
+        std::cout << "level " << lv << ": " << counter[lv] << std::endl;
+
+    // non-maximal suppression
+    std::cout << "\nApply non-maximal suppression ...\n" << std::endl;
+    nonMaximalSuppression(features, max_feature, non_max_r, non_max_step);
+
+    std::cout << "\tNumber of Features: " << features.size() << std::endl
+    for (int lv = 0; lv < level; lv++)
+        counter[lv] = 0;
+    for (int k = 0; k < features.size(); k++)
+        counter[features[k].level]++;
+    for (int lv = 0; lv < level; lv++)
+        std::cout << "level " << lv << ": " << counter[lv] << std::endl;
+
+    // feature descriptor
+    std::cout << "\nCompute feature descriptors ..." << std::endl;
+    featureDescriptor(features, pyramid, level, scale);
+
+    for (int i = 0; i < src.rows; i++)
+        delete[] featureMap[i];
+    delete[] featureMap;
+    delete[] counter;
+	return src;
+}
+
 void getPyramid(std::vector<cv::Mat>& pyramid, int _scale, int _level, float _sigma)
 {
     for (int lv = _level - 2; lv >= 0; lv--) {
@@ -423,91 +512,4 @@ void drawFeatures(const std::vector<FeaturePoint>& features, cv::Mat& src) {
     cv::waitKey(1);
 }
 
-cv::Mat DetectFeature(cv::Mat src, std::vector<FeaturePoint> features, int level = 5, int scale = 2, float feature_threshold = 30.0, int max_feature = 500, int non_max_r = 1, int non_max_step = 1)
-{
-    float sigma = 1.0;
-    float sigma_d = 1.0;
-    float sigma_i = 1.5;
-    float sigma_o = 4.5;
 
-	cv::Mat gray;
-	cv::cvtColor(src, gray, cv::COLOR_BGR2GRAY);
-	std::vector<cv::Mat> pyramid(level);
-    for (int i = 0; i < level; i++) {
-        gray.copyTo(pyramid[i]);
-    }
-	getPyramid(pyramid, scale, level, sigma);
-
-    // Harris corner response
-    std::vector<cv::Mat> response(level);
-    for (int i = 0; i < level; i++) {
-        pyramid[i].copyTo(response[i]);
-    }
-    HarrisResponse(pyramid, response, level, sigma_d, sigma_i);
-
-    // feature orientation
-    std::vector<cv::Mat> orientation(level);
-    for (int i = 0; i < level; i++) {
-        pyramid[i].copyTo(orientation[i]);
-    }
-    featureOrientation(pyramid, orientation, level, sigma_o);
-
-    // find local maxima and thresholding
-    bool** isFeature = new bool* [level];
-    for (int lv = 0; lv < level; lv++)
-        isFeature[lv] = new bool[response[lv].cols * response[lv].rows];
-    findFeatures(response, isFeature, level, feature_threshold);
-
-    // sub-pixel accuracy
-    subPixelAccuracy(response, isFeature, level);
-
-    // project features to original resolution
-    FeaturePoint** featureMap = new FeaturePoint * [src.rows];
-    for (int i = 0; i < src.rows; i++)
-        featureMap[i] = new FeaturePoint[src.cols];
-    projectFeatures(features, featureMap, response, orientation, isFeature, level, scale);
-    response.resize(0);
-    orientation.resize(0);
-    drawFeatures(features, src);
-
-    int* counter = new int[level];
-    for (int lv = 0; lv < level; lv++)
-        counter[lv] = 0;
-    for (int k = 0; k < features.size(); k++)
-        counter[features[k].level]++;
-    for (int lv = 0; lv < level; lv++)
-        std::cout << "level " << lv << ": " << counter[lv] << std::endl;
-
-    // delete features too close to the boundaries
-    deleteCloseToBounds(features, pyramid, level, scale);
-    drawFeatures(features, src);
-    std::cout << "\tNumber of Features: " << features.size() << std::endl
-    for (int lv = 0; lv < level; lv++)
-        counter[lv] = 0;
-    for (int k = 0; k < features.size(); k++)
-        counter[features[k].level]++;
-    for (int lv = 0; lv < level; lv++)
-        std::cout << "level " << lv << ": " << counter[lv] << std::endl;
-
-    // non-maximal suppression
-    std::cout << "\nApply non-maximal suppression ...\n" << std::endl;
-    nonMaximalSuppression(features, max_feature, non_max_r, non_max_step);
-
-    std::cout << "\tNumber of Features: " << features.size() << std::endl
-    for (int lv = 0; lv < level; lv++)
-        counter[lv] = 0;
-    for (int k = 0; k < features.size(); k++)
-        counter[features[k].level]++;
-    for (int lv = 0; lv < level; lv++)
-        std::cout << "level " << lv << ": " << counter[lv] << std::endl;
-
-    // feature descriptor
-    std::cout << "\nCompute feature descriptors ..." << std::endl;
-    featureDescriptor(features, pyramid, level, scale);
-
-    for (int i = 0; i < src.rows; i++)
-        delete[] featureMap[i];
-    delete[] featureMap;
-    delete[] counter;
-	return src;
-}
